@@ -1,4 +1,5 @@
 import { program } from 'commander'
+import genDiff from './index.js'
 
 export default () => {
   program
@@ -8,6 +9,7 @@ export default () => {
     .option('-f, --format [type]', 'output format')
     .argument('<filepath1>')
     .argument('<filepath2>')
+    .action(genDiff)
 
   program.parse()
 }
