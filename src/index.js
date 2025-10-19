@@ -1,52 +1,55 @@
 import { readFileSync } from 'node:fs'
-import path from 'node:path'
-import { cwd } from 'node:process'
+import path from 'path'
+import { cwd } from 'process'
 import _ from 'lodash'
 
-const getFileFromPath = (filepath) => {
-  const extantion = path.extname(filepath).slice(1)
-  const file = readFileSync(filepath)
+export const getFileFromPath = (filePath) => {
+  const extantion = path.extname(filePath).slice(1)
+  const basename = path.basename(filePath)
+  const file = readFileSync(filePath)
 
-  if (extantion === 'json') {
-    return JSON.parse(file)
+  if (extantion !== 'json') {
+    throw new Error(`unsupported format file: ${basename}`)
   }
 
-  const basename = path.basename(filepath)
-  return `Unsupported format file ${basename}`
+  return JSON.parse(file)
 }
 
-const formatPath = pathName => path.resolve(cwd(), pathName)
+export const formatToAbsolutePath = pathName => path.resolve(cwd(), pathName)
 
 const genDiff = (filePath1, filePath2) => {
-  const formattedPath1 = formatPath(filePath1)
-  const formattedPath2 = formatPath(filePath2)
+  const formattedPath1 = formatToAbsolutePath(filePath1)
+  const formattedPath2 = formatToAbsolutePath(filePath2)
   const parsedFile1 = getFileFromPath(formattedPath1)
   const parsedFile2 = getFileFromPath(formattedPath2)
   const sortedKeys1 = _.sortBy(Object.keys(parsedFile1))
   const sortedKeys2 = _.sortBy(Object.keys(parsedFile2))
   const allUniqKeys = _.union(sortedKeys1, sortedKeys2)
 
-  const diffString = allUniqKeys.reduce((acc, key) => {
+  const diffString = allUniqKeys.map((key) => {
     const indent = ' '.repeat(2)
     const value1 = parsedFile1[key]
     const value2 = parsedFile2[key]
+    const isKeyInFile2 = sortedKeys2.includes(key)
 
-    if (sortedKeys2.includes(key)) {
-      if (!value1) {
-        return acc += `${indent}+ ${key}: ${value2}\n`
-      }
-
-      if (value1 === value2) {
-        return acc += `${indent.repeat(2)}${key}: ${value1}\n`
-      }
-
-      return acc += `${indent}- ${key}: ${value1}\n${indent}+ ${key}: ${value2}\n`
+    if (!isKeyInFile2) {
+      return `${indent}- ${key}: ${value1}`
     }
 
-    return acc += `${indent}- ${key}: ${value1}\n`
-  }, '\n')
+    if (!value1) {
+      return `${indent}+ ${key}: ${value2}`
+    }
 
-  console.log(`{${diffString}}`)
+    if (value1 === value2) {
+      return `${indent.repeat(2)}${key}: ${value1}`
+    }
+
+    return `${indent}- ${key}: ${value1}\n${indent}+ ${key}: ${value2}`
+  }).join('\n')
+
+  const diffWithBraces = `{\n${diffString}\n}`
+
+  return diffWithBraces
 }
 
 export default genDiff
