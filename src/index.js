@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
-import path from 'path'
-import { cwd } from 'process'
+import path from 'node:path'
+import { cwd } from 'node:process'
 import _ from 'lodash'
 
 export const getFileFromPath = (filePath) => {
