@@ -1,36 +1,9 @@
-import { getFileFromPath, formatToAbsolutePath } from '../src/index.js'
+import { formatToAbsolutePath } from '../src/index.js'
 import genDiff from '../src/index.js'
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
 import path from 'path'
 import { readFileSync } from 'node:fs'
 import { cwd } from 'process'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const getFixturePath = filename => path.join(__dirname, '..', '__fixtures__', filename)
-
-describe('getFileFromPath', () => {
-  test('base case with json file', () => {
-    const pathToJson = getFixturePath('file1.json')
-    const result = JSON.parse(readFileSync(pathToJson))
-
-    expect(getFileFromPath(pathToJson)).toEqual(result)
-  })
-
-  test('case with unsupported format', () => {
-    const pathToTxt = getFixturePath('file1.txt')
-    const result = new Error('unsupported format file: file1.txt')
-
-    expect(() => getFileFromPath(pathToTxt)).toThrow(result)
-  })
-
-  test('case with non exist json', () => {
-    const pathToNonExist = getFixturePath('1111.json')
-
-    expect(() => getFileFromPath(pathToNonExist)).toThrow()
-  })
-})
+import getFixturePath from './__utils__/test-utils.js'
 
 describe('formatToAbsolutePath', () => {
   test('base case', () => {
@@ -52,7 +25,9 @@ describe('formatToAbsolutePath', () => {
 describe('genDiff', () => {
   describe('success cases', () => {
     test.each([
-      ['base case', getFixturePath('file1.json'), getFixturePath('file2.json')],
+      ['json format', getFixturePath('file1.json'), getFixturePath('file2.json')],
+      ['yaml format', getFixturePath('file1.yaml'), getFixturePath('file2.yaml')],
+      ['yml format', getFixturePath('file1.yml'), getFixturePath('file2.yml')],
       ['relative paths', './__fixtures__/file1.json', './__fixtures__/file2.json'],
     ])('%s', (_, pathToFile1, pathToFile2) => {
       const pathToDiffFile = getFixturePath('jsonDiff.txt')

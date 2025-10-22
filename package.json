@@ -23,6 +23,11 @@
     "test:coverage": "jest --coverage",
     "lint": "npx eslint ."
   },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "__utils__"
+    ]
+  },
   "devDependencies": {
     "@eslint/js": "^9.37.0",
     "@stylistic/eslint-plugin": "^5.4.0",
@@ -32,6 +37,7 @@
   },
   "dependencies": {
     "commander": "^14.0.1",
+    "js-yaml": "^4.1.0",
     "lodash": "^4.17.21"
   }
 }

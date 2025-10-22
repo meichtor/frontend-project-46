@@ -1,19 +1,7 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
 import { cwd } from 'node:process'
 import _ from 'lodash'
-
-export const getFileFromPath = (filePath) => {
-  const extantion = path.extname(filePath).slice(1)
-  const basename = path.basename(filePath)
-  const file = readFileSync(filePath)
-
-  if (extantion !== 'json') {
-    throw new Error(`unsupported format file: ${basename}`)
-  }
-
-  return JSON.parse(file)
-}
+import path from 'node:path'
+import getFileFromPath from './parsers.js'
 
 export const formatToAbsolutePath = pathName => path.resolve(cwd(), pathName)
 
