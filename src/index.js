@@ -2,42 +2,70 @@ import { cwd } from 'node:process'
 import _ from 'lodash'
 import path from 'node:path'
 import getFileFromPath from './parsers.js'
+import { getFormatConfig, formatDiffTree } from './formatDiff.js'
 
 export const formatToAbsolutePath = pathName => path.resolve(cwd(), pathName)
 
-const genDiff = (filePath1, filePath2) => {
+export const buildDiffTree = (obj1, obj2) => {
+  const keys1 = Object.keys(obj1)
+  const keys2 = Object.keys(obj2)
+  const uniqKeys = _.union(keys1, keys2).sort()
+
+  return uniqKeys.map((key) => {
+    const value1 = obj1[key]
+    const value2 = obj2[key]
+
+    if (_.isObject(value1) && _.isObject(value2)) {
+      return {
+        key,
+        type: 'nested',
+        children: buildDiffTree(value1, value2),
+      }
+    }
+
+    if (!Object.hasOwn(obj1, key)) {
+      return {
+        key,
+        type: 'added',
+        value: value2,
+      }
+    }
+
+    if (!Object.hasOwn(obj2, key)) {
+      return {
+        key,
+        type: 'deleted',
+        value: value1,
+      }
+    }
+
+    if (value1 !== value2) {
+      return {
+        key,
+        type: 'changed',
+        oldValue: value1,
+        newValue: value2,
+      }
+    }
+
+    return {
+      key,
+      type: 'unchanged',
+      value: value1,
+    }
+  })
+}
+
+const genDiff = (filePath1, filePath2, format = 'stylish') => {
   const formattedPath1 = formatToAbsolutePath(filePath1)
   const formattedPath2 = formatToAbsolutePath(filePath2)
   const parsedFile1 = getFileFromPath(formattedPath1)
   const parsedFile2 = getFileFromPath(formattedPath2)
-  const sortedKeys1 = _.sortBy(Object.keys(parsedFile1))
-  const sortedKeys2 = _.sortBy(Object.keys(parsedFile2))
-  const allUniqKeys = _.union(sortedKeys1, sortedKeys2)
+  const diffTree = buildDiffTree(parsedFile1, parsedFile2)
+  const formatConfig = getFormatConfig(format)
+  const formattedDiff = formatDiffTree(diffTree, formatConfig, 1)
 
-  const diffString = allUniqKeys.map((key) => {
-    const indent = ' '.repeat(2)
-    const value1 = parsedFile1[key]
-    const value2 = parsedFile2[key]
-    const isKeyInFile2 = sortedKeys2.includes(key)
-
-    if (!isKeyInFile2) {
-      return `${indent}- ${key}: ${value1}`
-    }
-
-    if (!value1) {
-      return `${indent}+ ${key}: ${value2}`
-    }
-
-    if (value1 === value2) {
-      return `${indent.repeat(2)}${key}: ${value1}`
-    }
-
-    return `${indent}- ${key}: ${value1}\n${indent}+ ${key}: ${value2}`
-  }).join('\n')
-
-  const diffWithBraces = `{\n${diffString}\n}`
-
-  return diffWithBraces
+  return formattedDiff
 }
 
 export default genDiff
