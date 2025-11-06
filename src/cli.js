@@ -9,8 +9,8 @@ const initCli = () => {
     .option('-f, --format [type]', 'output format', 'stylish')
     .argument('<filepath1>')
     .argument('<filepath2>')
-    .action((filePath1, filePath2) => {
-      const diff = genDiff(filePath1, filePath2)
+    .action((filePath1, filePath2, opts) => {
+      const diff = genDiff(filePath1, filePath2, opts.format)
       console.log(diff)
     })
 

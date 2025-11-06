@@ -2,7 +2,7 @@ import { cwd } from 'node:process'
 import _ from 'lodash'
 import path from 'node:path'
 import getFileFromPath from './parsers.js'
-import { getFormatConfig, formatDiffTree } from './formatDiff.js'
+import { formatDiffTree } from './formatters/index.js'
 
 export const formatToAbsolutePath = pathName => path.resolve(cwd(), pathName)
 
@@ -62,8 +62,7 @@ const genDiff = (filePath1, filePath2, format = 'stylish') => {
   const parsedFile1 = getFileFromPath(formattedPath1)
   const parsedFile2 = getFileFromPath(formattedPath2)
   const diffTree = buildDiffTree(parsedFile1, parsedFile2)
-  const formatConfig = getFormatConfig(format)
-  const formattedDiff = formatDiffTree(diffTree, formatConfig, 1)
+  const formattedDiff = formatDiffTree(diffTree, format)
 
   return formattedDiff
 }

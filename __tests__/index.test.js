@@ -24,9 +24,9 @@ describe('formatToAbsolutePath', () => {
 
 describe('buildDiffTree', () => {
   test('base case', () => {
-    const filePath1 = getFixturePath('nested1.json')
-    const filePath2 = getFixturePath('nested2.json')
-    const pathToExpected = getFixturePath('diffTree.json')
+    const filePath1 = getFixturePath('/nested/nested1.json')
+    const filePath2 = getFixturePath('/nested/nested2.json')
+    const pathToExpected = getFixturePath('/nested/nestedTree.json')
     const obj1 = JSON.parse(readFileSync(filePath1, 'utf-8'))
     const obj2 = JSON.parse(readFileSync(filePath2, 'utf-8'))
     const expectedTree = JSON.parse(readFileSync(pathToExpected, 'utf-8'))
@@ -55,12 +55,12 @@ describe('buildDiffTree', () => {
 describe('genDiff', () => {
   describe('plain cases', () => {
     test.each([
-      ['json format', getFixturePath('file1.json'), getFixturePath('file2.json')],
-      ['yaml format', getFixturePath('file1.yaml'), getFixturePath('file2.yaml')],
-      ['yml format', getFixturePath('file1.yml'), getFixturePath('file2.yml')],
-      ['relative paths', './__fixtures__/file1.json', './__fixtures__/file2.json'],
+      ['json format', getFixturePath('/plain/file1.json'), getFixturePath('/plain/file2.json')],
+      ['yaml format', getFixturePath('/plain/file1.yaml'), getFixturePath('/plain/file2.yaml')],
+      ['yml format', getFixturePath('/plain/file1.yml'), getFixturePath('/plain/file2.yml')],
+      ['relative paths', './__fixtures__/plain/file1.json', './__fixtures__/plain/file2.json'],
     ])('%s', (_, pathToFile1, pathToFile2) => {
-      const pathToDiffFile = getFixturePath('jsonDiff.txt')
+      const pathToDiffFile = getFixturePath('/plain/stylishFormat.txt')
       const result = genDiff(pathToFile1, pathToFile2)
       const expectedDiff = readFileSync(pathToDiffFile, 'utf-8')
 
@@ -71,10 +71,10 @@ describe('genDiff', () => {
 
   describe('nested cases', () => {
     test.each([
-      ['json format', getFixturePath('nested1.json'), getFixturePath('nested2.json')],
-      ['yaml format', getFixturePath('nested1.yaml'), getFixturePath('nested2.yaml')],
+      ['json format', getFixturePath('/nested/nested1.json'), getFixturePath('/nested/nested2.json')],
+      ['yaml format', getFixturePath('/nested/nested1.yaml'), getFixturePath('/nested/nested2.yaml')],
     ])('%s', (_, pathToFile1, pathToFile2) => {
-      const pathToDiffFile = getFixturePath('nestedDiff.txt')
+      const pathToDiffFile = getFixturePath('/nested/stylishFormat.txt')
       const result = genDiff(pathToFile1, pathToFile2)
       const expectedDiff = readFileSync(pathToDiffFile, 'utf-8')
 
@@ -85,9 +85,9 @@ describe('genDiff', () => {
 
   describe('invalid args', () => {
     test.each([
-      ['one of paths is empty', '', getFixturePath('file2.json')],
+      ['one of paths is empty', '', getFixturePath('/plain/file2.json')],
       ['both paths is empty', '', ''],
-      ['unsupported format file', getFixturePath('file1.txt'), getFixturePath('file2.json')],
+      ['unsupported format file', getFixturePath('/plain/file1.txt'), getFixturePath('/plain/file2.json')],
     ])('%s', (_, pathToFile1, pathToFile2) => {
       expect(() => genDiff(pathToFile1, pathToFile2)).toThrow()
     })
