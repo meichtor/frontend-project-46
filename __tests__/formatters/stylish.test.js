@@ -44,7 +44,7 @@ describe('stylishFormatter', () => {
     const expectedTree = readFileSync(pathToExpected, 'utf-8')
     const buildedTree = JSON.parse(readFileSync(pathToTree, 'utf-8'))
 
-    const result = stylishFormatter(buildedTree, 1)
+    const result = stylishFormatter(buildedTree)
 
     expect(expectedTree).toEqual(result)
   })
@@ -56,7 +56,7 @@ describe('stylishFormatter', () => {
     const expectedTree = readFileSync(pathToExpected, 'utf-8')
     const buildedTree = JSON.parse(readFileSync(pathToTree, 'utf-8'))
 
-    const result = stylishFormatter(buildedTree, 1)
+    const result = stylishFormatter(buildedTree)
 
     expect(expectedTree).toEqual(result)
   })

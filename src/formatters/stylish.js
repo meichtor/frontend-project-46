@@ -34,7 +34,7 @@ const formatValue = (currValue, depth, replacer = ' ', spacesCount = 4) => {
   ].join('\n')
 }
 
-const stylishFormatter = (tree, depth) => {
+const stylishFormatter = (tree, depth = 1) => {
   const { replacer, spacesCount, leftShift, typeSymols } = config
 
   const iter = (node, depth) => node.flatMap((node) => {
