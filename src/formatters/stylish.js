@@ -60,7 +60,7 @@ const stylishFormatter = (tree, depth = 1) => {
         return [
           `${replacer.repeat(indentsCount)}${symbol.oldValue}${key}: ${formatValue(node.oldValue, nextDepth, replacer, spacesCount)}`,
           `${replacer.repeat(indentsCount)}${symbol.newValue}${key}: ${formatValue(node.newValue, nextDepth, replacer, spacesCount)}`,
-        ]
+        ].join('\n')
       }
 
       default: {
