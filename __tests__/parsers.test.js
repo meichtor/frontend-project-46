@@ -4,9 +4,9 @@ import getFileFromPath from '../src/parsers.js'
 import { readFileSync } from 'node:fs'
 
 describe('getFileFromPath', () => {
-  test('base case with supported file formats', () => {
-    const pathToJson = getFixturePath('/plain/file1.json')
-    const pathToYaml = getFixturePath('/plain/file1.yaml')
+  test('with supported file formats', () => {
+    const pathToJson = getFixturePath('before1.json')
+    const pathToYaml = getFixturePath('before1.yaml')
     const jsonResult = getFileFromPath(pathToJson)
     const yamlResult = getFileFromPath(pathToYaml)
     const expectedJson = JSON.parse(readFileSync(pathToJson))
@@ -16,9 +16,9 @@ describe('getFileFromPath', () => {
     expect(expectedYaml).toEqual(yamlResult)
   })
 
-  test('case with unsupported format', () => {
-    const pathToTxt = getFixturePath('/plain/file1.txt')
-    const result = new Error('Unsupported format file: file1.txt')
+  test('with unsupported formats', () => {
+    const pathToTxt = getFixturePath('before1.txt')
+    const result = new Error('Unsupported format file: before1.txt')
 
     expect(() => getFileFromPath(pathToTxt)).toThrow(result)
   })

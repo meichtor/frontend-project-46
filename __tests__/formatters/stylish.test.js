@@ -37,21 +37,9 @@ describe('formatValue', () => {
 })
 
 describe('stylishFormatter', () => {
-  test('plain file', () => {
-    const pathToExpected = getFixturePath('/plain/stylishFormat.txt')
-    const pathToTree = getFixturePath('/plain/plainTree.json')
-
-    const expectedTree = readFileSync(pathToExpected, 'utf-8')
-    const buildedTree = JSON.parse(readFileSync(pathToTree, 'utf-8'))
-
-    const result = stylishFormatter(buildedTree)
-
-    expect(expectedTree).toEqual(result)
-  })
-
-  test('nested file', () => {
-    const pathToExpected = getFixturePath('/nested/stylishFormat.txt')
-    const pathToTree = getFixturePath('/nested/nestedTree.json')
+  test('check valid format', () => {
+    const pathToExpected = getFixturePath('outputStylish.txt')
+    const pathToTree = getFixturePath('tree.json')
 
     const expectedTree = readFileSync(pathToExpected, 'utf-8')
     const buildedTree = JSON.parse(readFileSync(pathToTree, 'utf-8'))

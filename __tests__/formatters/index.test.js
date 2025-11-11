@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs'
 import { jsonFormatter } from '../../src/formatters/json.js'
 
 describe('formatValue', () => {
-  const pathToTree = getFixturePath('/plain/plainTree.json')
+  const pathToTree = getFixturePath('tree.json')
   const buildedTree = JSON.parse(readFileSync(pathToTree, 'utf-8'))
 
   test('with default/unsupported format', () => {

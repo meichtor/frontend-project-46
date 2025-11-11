@@ -13,21 +13,9 @@ describe('formatValue', () => {
 })
 
 describe('plainFormatter', () => {
-  test('plain file', () => {
-    const pathToExpected = getFixturePath('/plain/plainFormat.txt')
-    const pathToTree = getFixturePath('/plain/plainTree.json')
-
-    const expectedTree = readFileSync(pathToExpected, 'utf-8')
-    const buildedTree = JSON.parse(readFileSync(pathToTree, 'utf-8'))
-
-    const result = plainFormatter(buildedTree)
-
-    expect(expectedTree).toEqual(result)
-  })
-
-  test('nested file', () => {
-    const pathToExpected = getFixturePath('/nested/plainFormat.txt')
-    const pathToTree = getFixturePath('/nested/nestedTree.json')
+  test('check valid format', () => {
+    const pathToExpected = getFixturePath('outputPlain.txt')
+    const pathToTree = getFixturePath('tree.json')
 
     const expectedTree = readFileSync(pathToExpected, 'utf-8')
     const buildedTree = JSON.parse(readFileSync(pathToTree, 'utf-8'))
